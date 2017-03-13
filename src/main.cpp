@@ -311,7 +311,7 @@ static void render()
 		   			SetMaterial(randPos[i * 3 + 2]);
 
 			  		/* Draw Penguins */
-			  		if (i < 10) {
+			  		if (i < 20) {
 			  			M->translate(vec3(0, -.5, 0));
 			  			M->rotate(randPos[i * 3 + 0], vec3(0, 1, 0));
 			  			M->scale(vec3(.75, .75, .75));
@@ -594,8 +594,8 @@ int main(int argc, char **argv)
 
 	// Generate positioning for 40 different objects
 	for (int i = 0; i < 40; i++) {
-		randPos[i * 3 + 0] = rand() % (15 + 15 + 1) - 15;	// randX
-	 	randPos[i * 3 + 1] = rand() % (15 + 15 + 1) - 15;	// randY
+		randPos[i * 3 + 0] = rand() % (20 + 20 + 1) - 20;	// randX
+	 	randPos[i * 3 + 1] = rand() % (20 + 20 + 1) - 20;	// randY
 	 	randPos[i * 3 + 2] = rand() % (3 - 0 + 1) + 0;		// randMaterial
 	 	randPos[i * 3 + 3] = rand() % (360 - 0 + 1) + 0;	// Individual rotation
 	}
