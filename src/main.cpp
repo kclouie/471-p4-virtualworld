@@ -314,6 +314,7 @@ static void render()
 
 			  		/* Draw Penguins */
 			  		if (i < 10) {
+			  			M->translate(vec3(0, -.5, 0));
 			  			M->rotate(randPos[i * 3 + 0], vec3(0, 1, 0));
 			  			M->scale(vec3(.75, .75, .75));
 						  	/* Body */	
