@@ -1,3 +1,5 @@
+// PROJECT 4 Frag Shader 
+
 #version 330 core 
 in vec3 fragNor;
 in vec3 WPos;
@@ -16,13 +18,13 @@ void main()
 	vec3 Dcolor, Scolor;
 
 	/* Diffuse */
-    vec3 Dlight = vec3(5, 5, 50);
+    /*vec3 Dlight = vec3(5, 5, 50);*/
     /*vec3 Dlight = LPos - WPos;*/
 	vec3 normal = normalize(fragNor);
 
 	/* Specular */
 	vec3 V = normalize(-WPos);
-	vec3 L = normalize(Dlight);
+	vec3 L = normalize(LPos - WPos);
 	vec3 H = normalize(L + V);
 	float specAngle = max(dot(H, normal), 0.0);
 

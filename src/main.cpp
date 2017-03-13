@@ -38,7 +38,7 @@ int g_width = 512;
 int g_height = 512;
 double randPos[160];
 int gMat = 1;
-float Lx = 1, Ly = 1, Lz = 1;
+float Lx = 50, Ly = 50, Lz = 30;
 double oldx, oldy;
 double phi, theta;
 vec3 eye, LA, up;
@@ -304,8 +304,6 @@ static void render()
 		//globl transforms for 'camera'
 	  	M->pushMatrix();
 	     	M->loadIdentity();
-		 	M->translate(vec3(0, 0, 0));
-		 	M->rotate(0, vec3(0, 1, 0));
 
 		 	for (int i = 0; i < 40; i++){
 			 	M->pushMatrix();
@@ -400,6 +398,12 @@ static void render()
 			  		}
 		   		M->popMatrix();
 		 	}
+		 	M->translate(vec3(0, -2, 0));
+		 	M->scale(vec3(500, .1, 500));
+		 	SetMaterial(1);
+	  	  	glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE,value_ptr(M->topMatrix()) );
+	  	  	cube->draw(prog);
+
 
 			//draw the ground plane	
 			/*prog2->bind();
@@ -487,11 +491,11 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 	theta += deltax * 3.14159265359 / g_width;
 	phi += deltay * 3.14159265359 / g_height;
 
-	if (phi >= 40) {
-		phi = 40;
+	if (phi >= 80) {
+		phi = 80;
 	}
-	if (phi <= -40) {
-		phi = -40;
+	if (phi <= -80) {
+		phi = -80;
 	}
 
 	oldx = xpos;
