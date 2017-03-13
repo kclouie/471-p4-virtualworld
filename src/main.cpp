@@ -294,19 +294,12 @@ static void render()
 		glUniform3f(prog->getUniform("LPos"), Lx, Ly, Lz);
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 
-		/*if (forwardflag > 0) {
-			eye += (normalize(LA - eye) * speed);
-			LA += (normalize(LA - eye) * speed);
-		}*/
-
 		LA = vec3((cos(glm::radians(phi)) * cos(glm::radians(theta))),
 		  (sin(glm::radians(phi))),
 		  (cos(glm::radians(phi)) * cos((3.14159265359 / 2) - glm::radians(theta))));
 
 		glm::mat4 V = lookAt(eye, eye + LA, up);
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE,value_ptr(V));
-
-		/*forwardflag = -1;*/
 
 		//globl transforms for 'camera'
 	  	M->pushMatrix();
@@ -451,20 +444,11 @@ static void error_callback(int error, const char *description)
 /* key callback */
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-	/*float speed = (3.14159265359 / g_width); too slow*/ 
 	float speed = .1;
-	/*vec3 view = normalize(LA - eye);*/
 
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
-	} /*else if (key == GLFW_KEY_M && action == GLFW_PRESS) {
-		gMat = (gMat+1)%4;
-	} else if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-		sTheta += 5;
-	} else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-		sTheta -= 5;
 	}
-*/
 	/* Commenting out for directional light outdoors */
 	/* Point Light */
 /*	if (key == GLFW_KEY_J && action == GLFW_PRESS) {
@@ -479,24 +463,18 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
 		Ly-=.5;
 	}*/
-	else if (key == GLFW_KEY_W && action == GLFW_PRESS) {	// forward
-		/*eye += (view * speed);
-		LA += (view * speed);*/
+	else if (key == GLFW_KEY_W) {	// forward
 		eye += speed * LA;
-/*		forwardflag = 1;*/
 	}
-	else if (key == GLFW_KEY_S && action == GLFW_PRESS) {	// back
-		/*eye -= (view * speed);
-		LA -= (view * speed);*/
+	else if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) {	// back
 		eye -= speed * LA;
-		/*backflag = 1;*/
 	}
-	/*else if (key == GLFW_KEY_A && action == GLFW_PRESS) {	// left
-		left = 1;
+	else if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {	// left
+		eye -= normalize(cross(LA, up)) * speed;
 	}
-	else if (key == GLFW_KEY_D && action == GLFW_PRESS)	{	// right
-		right = 1;
-	}*/
+	else if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {	// right
+		eye += normalize(cross(LA, up)) * speed;
+	}
 
 }
 
