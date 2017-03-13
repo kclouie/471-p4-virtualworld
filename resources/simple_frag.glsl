@@ -16,7 +16,7 @@ void main()
 	vec3 Dcolor, Scolor;
 
 	/* Diffuse */
-    vec3 Dlight = vec3(5, 5, 5);
+    vec3 Dlight = vec3(5, 5, 50);
     /*vec3 Dlight = LPos - WPos;*/
 	vec3 normal = normalize(fragNor);
 
