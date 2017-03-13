@@ -1,8 +1,5 @@
 /* 
 Project 4
-
-Winter 2017 - ZJW (Piddington texture write)
-Look for "TODO" in this file and write new shaders
 */
 
 #include <iostream>
@@ -42,9 +39,6 @@ float Lx = 50, Ly = 50, Lz = 30;
 double oldx, oldy;
 double phi, theta;
 vec3 eye, LA, up;
-
-/*float rightflag = -1, leftflag = -1, forwardflag = -1, backflag = -1;*/
-
 
 
 //global reference to texture FBO
@@ -271,10 +265,6 @@ static void render()
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
-	/*float speed = .1;*/
-	
-	//set up to render to buffer
-//	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
 	// Clear framebuffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -403,36 +393,6 @@ static void render()
 		 	SetMaterial(1);
 	  	  	glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE,value_ptr(M->topMatrix()) );
 	  	  	cube->draw(prog);
-
-
-			//draw the ground plane	
-			/*prog2->bind();
-			M->pushMatrix();
-			   	texture2->bind(prog2->getUniform("Texture2"));
-				glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
-				glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE, value_ptr(M->topMatrix()));
-
-				glEnableVertexAttribArray(0);
-			   	glBindBuffer(GL_ARRAY_BUFFER, GrndBuffObj);
-			   	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-				glEnableVertexAttribArray(1);
-			   	glBindBuffer(GL_ARRAY_BUFFER, GrndNorBuffObj);
-			   	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-				 
-				glEnableVertexAttribArray(2);
-			   	glBindBuffer(GL_ARRAY_BUFFER, GrndTexBuffObj);
-			   	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-			   	// draw!
-			   	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GIndxBuffObj);
-			   	glDrawElements(GL_TRIANGLES, g_GiboLen, GL_UNSIGNED_SHORT, 0);
-
-			   	glDisableVertexAttribArray(0);
-				glDisableVertexAttribArray(1);
-				glDisableVertexAttribArray(2);
-		   	M->popMatrix();
-		   	prog2->unbind();*/
 	   	M->popMatrix();
 
    	P->popMatrix();
@@ -454,20 +414,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	/* Commenting out for directional light outdoors */
-	/* Point Light */
-/*	if (key == GLFW_KEY_J && action == GLFW_PRESS) {
-		Lx-=.5;
-	}
-	else if (key == GLFW_KEY_L && action == GLFW_PRESS) {
-		Lx+=.5;
-	}
-	else if (key == GLFW_KEY_I && action == GLFW_PRESS) {
-		Ly+=.5;
-	}
-	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
-		Ly-=.5;
-	}*/
 	else if (key == GLFW_KEY_W) {	// forward
 		eye += speed * LA;
 	}
