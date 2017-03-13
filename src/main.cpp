@@ -36,13 +36,15 @@ shared_ptr<Shape> tree;
 
 int g_width = 512;
 int g_height = 512;
-float sTheta;
+double randPos[160];
 int gMat = 1;
 float Lx = 1, Ly = 1, Lz = 1;
 double oldx, oldy;
 double phi, theta;
 vec3 eye, LA, up;
-double randPos[160];
+
+/*float rightflag = -1, leftflag = -1, forwardflag = -1, backflag = -1;*/
+
 
 
 //global reference to texture FBO
@@ -174,7 +176,6 @@ static void initGL()
   	int width, height;
   	glfwGetFramebufferSize(window, &width, &height);
 
-	sTheta = 0;
 	oldx = 0;
 	oldy = 0;
 	phi = 0;
@@ -182,6 +183,8 @@ static void initGL()
 	LA = vec3(0, 0, -5);
 	eye = vec3(0, 0, 0);
 	up = vec3(0, 1, 0);
+
+
 	// Set background color.
 	glClearColor(.12f, .34f, .56f, 1.0f);
 	// Enable z-buffer test.
@@ -260,24 +263,6 @@ static void initGL()
 
 }
 
-/* To call the blur on the specificed texture */
-/* TODO: fill in with call to appropriate shader(s) to complete the blur  */
-/*void Blur(GLuint inTex) {
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, inTex);
-   
-	// example applying of 'drawing' the FBO texture
-   tex_prog->bind();
-   glUniform1i(tex_prog->getUniform("texBuf"), 0);
-   glEnableVertexAttribArray(0);
-   glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *) 0);
-   glDrawArrays(GL_TRIANGLES, 0, 6);
-   glDisableVertexAttribArray(0);
-   tex_prog->unbind();
-  
-}*/
-
 /* The render loop - this function is called repeatedly during the OGL program run */
 static void render()
 {
@@ -285,6 +270,8 @@ static void render()
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
+
+	/*float speed = .1;*/
 	
 	//set up to render to buffer
 //	glBindFramebuffer(GL_FRAMEBUFFER, frameBuf[0]);
@@ -307,25 +294,30 @@ static void render()
 		glUniform3f(prog->getUniform("LPos"), Lx, Ly, Lz);
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
 
+		/*if (forwardflag > 0) {
+			eye += (normalize(LA - eye) * speed);
+			LA += (normalize(LA - eye) * speed);
+		}*/
+
 		LA = vec3((cos(glm::radians(phi)) * cos(glm::radians(theta))),
 		  (sin(glm::radians(phi))),
 		  (cos(glm::radians(phi)) * cos((3.14159265359 / 2) - glm::radians(theta))));
 
-		glm::mat4 V = lookAt(eye, LA, up);
+		glm::mat4 V = lookAt(eye, eye + LA, up);
 		glUniformMatrix4fv(prog->getUniform("V"), 1, GL_FALSE,value_ptr(V));
+
+		/*forwardflag = -1;*/
 
 		//globl transforms for 'camera'
 	  	M->pushMatrix();
 	     	M->loadIdentity();
 		 	M->translate(vec3(0, 0, 0));
-		 	M->rotate(radians(sTheta), vec3(0, 1, 0));
+		 	M->rotate(0, vec3(0, 1, 0));
 
 		 	for (int i = 0; i < 40; i++){
 			 	M->pushMatrix();
 		   			M->translate(vec3(randPos[i * 3 + 0], 0, randPos[i * 3 + 1]));
 		   			SetMaterial(randPos[i * 3 + 2]);
-		   			/*M->rotate(randPos[i * 3 + 0], vec3(0, 1, 0));*/
-			  		/*glUniformMatrix4fv(prog->getUniform("M"), 1, GL_FALSE,value_ptr(M->topMatrix()));*/
 
 			  		/* Draw Penguins */
 			  		if (i < 10) {
@@ -442,6 +434,7 @@ static void render()
 				glDisableVertexAttribArray(1);
 				glDisableVertexAttribArray(2);
 		   	M->popMatrix();
+		   	prog2->unbind();
 	   	M->popMatrix();
 
    	P->popMatrix();
@@ -458,6 +451,10 @@ static void error_callback(int error, const char *description)
 /* key callback */
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
+	/*float speed = (3.14159265359 / g_width); too slow*/ 
+	float speed = .1;
+	/*vec3 view = normalize(LA - eye);*/
+
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	} /*else if (key == GLFW_KEY_M && action == GLFW_PRESS) {
@@ -468,8 +465,9 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 		sTheta -= 5;
 	}
 */
+	/* Commenting out for directional light outdoors */
 	/* Point Light */
-	if (key == GLFW_KEY_J && action == GLFW_PRESS) {
+/*	if (key == GLFW_KEY_J && action == GLFW_PRESS) {
 		Lx-=.5;
 	}
 	else if (key == GLFW_KEY_L && action == GLFW_PRESS) {
@@ -480,7 +478,26 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 	}
 	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
 		Ly-=.5;
+	}*/
+	else if (key == GLFW_KEY_W && action == GLFW_PRESS) {	// forward
+		/*eye += (view * speed);
+		LA += (view * speed);*/
+		eye += speed * LA;
+/*		forwardflag = 1;*/
 	}
+	else if (key == GLFW_KEY_S && action == GLFW_PRESS) {	// back
+		/*eye -= (view * speed);
+		LA -= (view * speed);*/
+		eye -= speed * LA;
+		/*backflag = 1;*/
+	}
+	/*else if (key == GLFW_KEY_A && action == GLFW_PRESS) {	// left
+		left = 1;
+	}
+	else if (key == GLFW_KEY_D && action == GLFW_PRESS)	{	// right
+		right = 1;
+	}*/
+
 }
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
