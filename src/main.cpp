@@ -402,7 +402,7 @@ static void render()
 		 	}
 
 			//draw the ground plane	
-			prog2->bind();
+			/*prog2->bind();
 			M->pushMatrix();
 			   	texture2->bind(prog2->getUniform("Texture2"));
 				glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, value_ptr(P->topMatrix()));
@@ -428,7 +428,7 @@ static void render()
 				glDisableVertexAttribArray(1);
 				glDisableVertexAttribArray(2);
 		   	M->popMatrix();
-		   	prog2->unbind();
+		   	prog2->unbind();*/
 	   	M->popMatrix();
 
    	P->popMatrix();
@@ -482,10 +482,17 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 
 	double deltax = xpos - oldx;
-	double deltay = oldy - ypos;
+	double deltay = ypos - oldy;
 
 	theta += deltax * 3.14159265359 / g_width;
 	phi += deltay * 3.14159265359 / g_height;
+
+	if (phi >= 40) {
+		phi = 40;
+	}
+	if (phi <= -40) {
+		phi = -40;
+	}
 
 	oldx = xpos;
 	oldy = ypos;
